@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "Bass Assistant",
+  "version": "5.5.0",
+  "description": "Agent-style bass assistant: Songsterr import, tone blueprint, ChatGPT bridge (manual + web automation).",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "clipboardWrite",
+    "storage",
+    "sidePanel",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://www.songsterr.com/*",
+    "https://chatgpt.com/*",
+    "https://chat.openai.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://chatgpt.com/*", "https://chat.openai.com/*"],
+      "js": ["chatgpt-content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

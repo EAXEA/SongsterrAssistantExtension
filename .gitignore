@@ -1,0 +1,14 @@
+# Test/dev artifacts (never push)
+node_modules/
+screenshots*/
+test-build/
+*.test.js
+test-*.js
+mock-*.html
+mock-*.js
+.DS_Store
+*.log
+
+# OS
+Thumbs.db
+desktop.ini

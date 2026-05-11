@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bass Assistant — Side Panel</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-context="sidepanel" class="theme-v5">
+  <div class="app sidepanel">
+
+    <header class="brand">
+      <div class="brand-mark"><span data-i18n="brand.name">🎸 Bass Assistant</span> <span class="helper" data-i18n="brand.subtitle.sidepanel">· Side Panel</span></div>
+      <div class="brand-actions">
+        <button id="open-panel-btn" class="icon-btn" data-i18n-title="panel.close" data-i18n-aria-label="panel.close" title="Side panel'i kapat" aria-label="Side panel'i kapat">✕</button>
+      </div>
+    </header>
+
+    <section id="status-banner" class="status-banner" data-state="idle" aria-live="polite">
+      <div class="status-icon" id="status-icon">●</div>
+      <div class="status-body">
+        <div class="status-title" id="status-title" data-i18n="status.ready">Hazır</div>
+        <div class="status-meta" id="status-meta" data-i18n="status.no_data">Henüz veri yok</div>
+        <div class="status-progress" id="status-progress" hidden>
+          <div class="status-progress-fill" id="status-progress-fill"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="primary-actions">
+      <button id="extract-btn" class="primary-cta cta-blue">
+        <span class="cta-icon">🎵</span>
+        <span class="cta-label" data-i18n="cta.extract">Şarkıları Çek</span>
+        <span class="cta-sub" id="extract-sub" data-i18n="cta.extract.sub">Songsterr sekmesinden</span>
+      </button>
+      <button id="ai-generate-btn" class="primary-cta cta-green">
+        <span class="cta-icon">⚡</span>
+        <span class="cta-label" data-i18n="cta.ai_generate">AI Tonları Üret</span>
+        <span class="cta-sub" id="ai-generate-sub" data-i18n="cta.ai_generate.sub.web">ChatGPT üzerinden</span>
+      </button>
+    </section>
+
+    <section class="filters-row">
+      <input id="search-input" data-i18n-placeholder="search.placeholder" placeholder="Şarkı ara…" />
+      <button id="clear-search-btn" class="ghost-btn small" data-i18n-title="search.clear_title" title="Aramayı temizle">✕</button>
+    </section>
+
+    <div class="chips" id="filter-chips"></div>
+    <div class="counts helper" id="counts"></div>
+
+    <section class="list-shell">
+      <div id="song-list" class="song-list"></div>
+    </section>
+
+    <details class="card collapsible" id="settings-card" open>
+      <summary class="card-title">
+        <span data-i18n="settings.title">⚙️ Ayarlar</span>
+        <span class="pill" id="settings-summary" data-i18n="settings.summary.default">Varsayılan</span>
+      </summary>
+      <div class="card-body">
+
+        <div class="setting-row">
+          <label class="field-label" data-i18n="settings.language">Dil / Language</label>
+          <div class="segment" role="radiogroup" id="language-segment">
+            <label><input type="radio" name="ui-lang" value="tr" checked /><span>Türkçe</span></label>
+            <label><input type="radio" name="ui-lang" value="en" /><span>English</span></label>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <label class="field-label" data-i18n="settings.provider">AI Sağlayıcı</label>
+          <div class="segment" role="radiogroup" id="provider-segment">
+            <label><input type="radio" name="ai-provider" value="chatgpt-web" checked /><span data-i18n="settings.provider.web">ChatGPT Web</span></label>
+            <label><input type="radio" name="ai-provider" value="manual" /><span data-i18n="settings.provider.manual">Manuel</span></label>
+          </div>
+          <div class="helper" id="provider-status"></div>
+        </div>
+
+        <div class="setting-row">
+          <label class="field-label" data-i18n="settings.tone_character">Tone karakteri</label>
+          <div class="tone-slider">
+            <div class="tone-slider-row">
+              <span class="tone-slider-end" data-i18n="settings.tone.lofi">Lofi</span>
+              <input id="tone-variation" type="range" min="0" max="100" value="35" aria-label="Tone variation" />
+              <span class="tone-slider-end" data-i18n="settings.tone.modern">Modern</span>
+            </div>
+            <div class="tone-slider-meta">
+              <span id="tone-variation-label" class="badge">35</span>
+              <span id="tone-variation-mood" class="helper">dengeye yakın</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <label class="field-label" data-i18n="settings.list_title">Liste adı</label>
+          <input id="prompt-title" data-i18n-placeholder="settings.list_title" placeholder="Liste adı" />
+        </div>
+
+        <div class="setting-row">
+          <label class="field-label" data-i18n="settings.prompt_context">Prompt başlangıcı</label>
+          <input id="prompt-context" data-i18n-placeholder="settings.prompt_context" placeholder="Prompt başlangıcı" />
+        </div>
+
+        <div class="setting-row">
+          <label class="field-label" data-i18n="settings.prompt_suffix">Prompt sonu yönlendirme</label>
+          <textarea id="prompt-suffix" data-i18n-placeholder="settings.prompt_suffix" placeholder="Prompt sonuna eklenecek yönlendirme"></textarea>
+        </div>
+
+        <div class="setting-row">
+          <label class="field-label" data-i18n="settings.sort">Sıralama</label>
+          <select id="sort-mode">
+            <option value="order" data-i18n="settings.sort.order">Manuel sıra</option>
+            <option value="oldest" data-i18n="settings.sort.oldest">Eski → Yeni</option>
+            <option value="newest" data-i18n="settings.sort.newest">Yeni → Eski</option>
+            <option value="rating" data-i18n="settings.sort.rating">Yıldız (5→0)</option>
+          </select>
+        </div>
+      </div>
+    </details>
+
+    <details class="card collapsible footer-more" id="more-card">
+      <summary class="card-title">
+        <span data-i18n="more.title">⋯ Daha fazla</span>
+      </summary>
+      <div class="card-body inline-grid">
+        <button id="copy-prompt-btn" class="ghost-btn" data-i18n="more.copy_prompt">📋 Prompt Kopyala</button>
+        <button id="copy-names-btn" class="ghost-btn" data-i18n="more.copy_names">🎵 İsimleri Kopyala</button>
+        <button id="download-txt-btn" class="ghost-btn" data-i18n="more.download_txt">⬇️ TXT İndir</button>
+        <button id="download-json-btn" class="ghost-btn" data-i18n="more.download_json">⬇️ JSON İndir</button>
+        <button id="import-json-btn" class="ghost-btn" data-i18n="more.upload_json">⬆️ JSON Yükle</button>
+        <input type="file" id="import-json-input" accept="application/json,.json" hidden />
+        <button id="clear-list-btn" class="ghost-btn danger-btn full-row" data-i18n="more.clear_list">🗑️ Tüm Listeyi Temizle</button>
+      </div>
+    </details>
+
+    <div id="manual-ai-modal" class="manual-ai-modal" hidden>
+      <div class="manual-ai-inner">
+        <div class="manual-ai-header">
+          <strong data-i18n="manual.title">Manuel AI akışı</strong>
+          <button id="manual-ai-close" class="icon-btn" data-i18n-aria-label="manual.close" aria-label="Kapat">✕</button>
+        </div>
+        <div class="manual-ai-step">
+          <span class="step-num">1</span>
+          <span data-i18n="manual.step1">Prompt clipboard'a kopyalandı. ChatGPT'ye yapıştır, JSON cevabı al.</span>
+        </div>
+        <div class="manual-ai-step">
+          <span class="step-num">2</span>
+          <span data-i18n="manual.step2">Cevabı buraya yapıştır:</span>
+        </div>
+        <textarea id="manual-ai-input" data-i18n-placeholder="manual.placeholder" placeholder='[{"title":"...","tone":{...},"fx":{...}}]'></textarea>
+        <div class="manual-ai-footer">
+          <button id="manual-ai-apply" class="primary" data-i18n="manual.apply">Uygula</button>
+        </div>
+      </div>
+    </div>
+
+    <span id="status" class="hidden" aria-hidden="true"></span>
+    <span id="setlist-mode-btn" class="hidden" aria-hidden="true"></span>
+    <span id="compact-mode-btn" class="hidden" aria-hidden="true"></span>
+    <span id="view-mode-segment" class="hidden" aria-hidden="true"></span>
+    <span id="auto-import-btn" class="hidden" aria-hidden="true"></span>
+    <span id="ai-bridge-card" class="hidden" aria-hidden="true"></span>
+    <span id="ai-bridge-pill" class="hidden" aria-hidden="true"></span>
+    <span id="ai-status" class="hidden" aria-hidden="true"></span>
+    <span id="ai-import" class="hidden" aria-hidden="true"></span>
+    <span id="import-ai-btn" class="hidden" aria-hidden="true"></span>
+    <span id="import-ai-bridge-btn" class="hidden" aria-hidden="true"></span>
+    <span id="setup-card" class="hidden" aria-hidden="true"></span>
+    <span id="summary" class="hidden" aria-hidden="true"></span>
+    <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  </div>
+
+  <script src="i18n.js"></script>
+  <script src="storage.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
